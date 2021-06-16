@@ -13,6 +13,9 @@
 #include "ns3/ipv4-nix-vector-helper.h"
 #include "ns3/flow-monitor-helper.h"
 #include "ns3/flow-monitor-module.h"
+#include "ns3/mmwave-helper.h"
+#include "ns3/epc-helper.h"
+#include "ns3/mmwave-point-to-point-epc-helper.h"
 
 #include "ns3/uinteger.h"
 #include "ns3/netanim-module.h"
@@ -33,6 +36,7 @@
 #include <ctime>
 
 using namespace ns3;
+using namespace mmwave;
 
 NS_LOG_COMPONENT_DEFINE ("DashBTreeBMobility");
 
@@ -75,13 +79,23 @@ main (int argc, char *argv[])
   Config::SetDefault ("ns3::TcpSocket::SegmentSize", UintegerValue (1600));
   Config::SetDefault ("ns3::TcpSocket::DelAckCount", UintegerValue (0));
 
-  ReadTopology (scenarioFiles + "/btree_l3_link", scenarioFiles + "/btree_l3_nodes", network);
+// mmWave 5g initialization
+  Ptr<MmWaveHelper> mmwaveHelper = CreateObject<MmWaveHelper> ();
+  mmwaveHelper->SetSchedulerType ("ns3::MmWaveFlexTtiMacScheduler");
+  Ptr<MmWavePointToPointEpcHelper>  epcHelper = CreateObject<MmWavePointToPointEpcHelper> ();
+  mmwaveHelper->SetEpcHelper (epcHelper);
+  Ptr<Node> pgw = epcHelper->GetPgwNode ();
+
+  ReadTopology (scenarioFiles + "/btree_l3_mmwave_link", scenarioFiles + "/btree_l3_mmwave_nodes", network);
 
   NS_LOG_INFO ("Create Nodes");
 
   NodeContainer nodes; // Declare nodes objects
+  NodeContainer non_mmwave_nodes; // nodes that don't need some prep work, e.g internet install
 
-  nodes.Create (network.getNodes ().size ());
+//  -1 due to pgw node being already created
+  nodes.Create (network.getNodes ().size () - 1);
+  nodes.Add(pgw);
 
   cout << "Node size = " << network.getNodes ().size () << endl;
   for (unsigned int i = 0; i < network.getNodes ().size (); i += 1)
@@ -91,6 +105,10 @@ main (int argc, char *argv[])
       Names::Add (network.getNodes ().at (i)->getType () + ss.str (),
                   nodes.Get (network.getNodes ().at (i)->getId ()));
       cout << "Node name " << i << " = " << network.getNodes ().at (i)->getType () << endl;
+      if (network.getNodes ().at (i)->getType () != "ap" and network.getNodes ().at (i)->getType () != "pgw") {
+          cout << "Adding to non nodes -> Node name =" << i << endl;
+          non_mmwave_nodes.Add(nodes.Get(i));
+        }
     }
 
   // Later we add IP Addresses
@@ -99,11 +117,11 @@ main (int argc, char *argv[])
 
   fprintf (stderr, "Installing Internet Stack\n");
   // Now add ip/tcp stack to all nodes.
-  internet.Install (nodes);
-  // internet.Install(cache_nodes);
+  internet.Install (non_mmwave_nodes);
 
   // create p2p links
   vector<NetDeviceContainer> netDevices;
+  Ipv4StaticRoutingHelper ipv4RoutingHelper;
   Ipv4AddressHelper address;
   address.SetBase ("10.0.0.0", "255.255.255.0");
   PointToPointHelper p2p;
@@ -145,20 +163,7 @@ main (int argc, char *argv[])
       eCtrl.createTroughputFile (stripv4, srcnode, dstnode);
     }
 
-  //Store IP adresses
-  std::string addr_file = "addresses";
-  ofstream out_addr_file (addr_file.c_str ());
-  for (unsigned int i = 0; i < nodes.GetN (); i++)
-    {
-      Ptr<Node> n = nodes.Get (i);
-      Ptr<Ipv4> ipv4 = n->GetObject<Ipv4> ();
-      for (uint32_t l = 1; l < ipv4->GetNInterfaces (); l++)
-        {
-          out_addr_file << i << " " << ipv4->GetAddress (l, 0).GetLocal () << endl;
-        }
-    }
-  out_addr_file.flush ();
-  out_addr_file.close ();
+  cout << "Created P2P Connections" << endl;
 
   // %%%%%%%%%%%% Set up the Mobility Position
   MobilityHelper mobility;
@@ -179,11 +184,16 @@ main (int argc, char *argv[])
       Ptr<Node> node = nodes.Get (network.getNodes ().at (i)->getId ());
       if (Names::FindName (node).find ("ap") != string::npos)
         {
-          map_aps.insert (std::pair<int, NodeContainer> (network.getNodes ().at (i)->getId (),
-                                                         NodeContainer ()));
+          map_aps.insert (
+              std::pair<int, NodeContainer>
+                  (
+                  network.getNodes ().at (i)->getId (),
+                  NodeContainer ())
+              );
         }
     }
 
+  cout << "AP mapping done..." << endl;
   int userId = 0;
   for (size_t i_client = 0; i_client < n_clients; i_client++)
     {
@@ -201,7 +211,7 @@ main (int argc, char *argv[])
           userId++;
         }
     }
-
+  cout << "Client node container creation done..." << endl;
   int seedValue = time (0);
   RngSeedManager::SetSeed (seedValue);
   srand (seedValue);
@@ -229,15 +239,17 @@ main (int argc, char *argv[])
         }
     }
 
+  cout << "Mobility model assigned to aps and clients" << endl;
   positionAlloc->Add (Vector (50, 15, 0)); // Ap 0
   positionAlloc->Add (Vector (250, 15, 0)); // Ap 1
   positionAlloc->Add (Vector (150, 30, 0)); // router 2
   positionAlloc->Add (Vector (150, 45, 0)); // router 3
+  positionAlloc->Add (Vector (150, 10, 0)); // pgw
 
-  positionAlloc->Add (Vector (50, 15, 0)); // Ap 0
-  positionAlloc->Add (Vector (250, 15, 0)); // Ap 1
-  positionAlloc->Add (Vector (150, 30, 0)); // router 2
-  positionAlloc->Add (Vector (150, 45, 0)); // router 3
+//  positionAlloc->Add (Vector (50, 15, 0)); // Ap 0
+//  positionAlloc->Add (Vector (250, 15, 0)); // Ap 1
+//  positionAlloc->Add (Vector (150, 30, 0)); // router 2
+//  positionAlloc->Add (Vector (150, 45, 0)); // router 3
 
   mobility.SetPositionAllocator (positionAlloc);
   mobility.SetMobilityModel ("ns3::ConstantPositionMobilityModel");
@@ -252,10 +264,10 @@ main (int argc, char *argv[])
   mobility.Install (nodes.Get (2));
   mobility.Install (nodes.Get (0));
   mobility.Install (nodes.Get (7));
+  mobility.Install (pgw);
 
-  YansWifiChannelHelper channel = YansWifiChannelHelper::Default ();
-  YansWifiPhyHelper phy = YansWifiPhyHelper::Default ();
-
+  cout << "Before 5G installation..." << endl;
+//  Install 5g here
   for (auto &ap : map_aps)
     {
       int ap_i = ap.first;
@@ -263,31 +275,31 @@ main (int argc, char *argv[])
 
       Ptr<Node> node = nodes.Get (ap_i);
 
+      NetDeviceContainer ap_dev = mmwaveHelper->InstallEnbDevice (node);
+      NetDeviceContainer sta_dev = mmwaveHelper->InstallUeDevice (node_clients);
+
       internet.Install (node_clients);
-
-      WifiHelper wifi;
-      WifiMacHelper mac;
-      phy.SetChannel (channel.Create ());
-
-      ostringstream ss;
-      ss << "ns-3-ssid-" << ++n_ap;
-      Ssid ssid = Ssid (ss.str ());
-
-      wifi.SetRemoteStationManager ("ns3::AarfWifiManager");
-      wifi.SetStandard (WIFI_PHY_STANDARD_80211g);
-
-      mac.SetType ("ns3::ApWifiMac", "Ssid", SsidValue (ssid));
-      NetDeviceContainer ap_dev = wifi.Install (phy, mac, node);
-
-      mac.SetType ("ns3::StaWifiMac", "Ssid", SsidValue (ssid), "ActiveProbing",
-                   BooleanValue (false));
-      NetDeviceContainer sta_dev = wifi.Install (phy, mac, node_clients);
 
       address.Assign (ap_dev);
       address.Assign (sta_dev);
       address.NewNetwork ();
+
+      mmwaveHelper->AttachToClosestEnb (sta_dev, ap_dev);
+
+      Ipv4InterfaceContainer ueIpIface;
+      ueIpIface = epcHelper->AssignUeIpv4Address (NetDeviceContainer (sta_dev));
+      // Assign IP address to UEs, and install applications
+      for (uint32_t u = 0; u < node_clients.GetN (); ++u)
+      {
+        Ptr<Node> ueNode = node_clients.Get (u);
+        // Set the default gateway for the UE
+        Ptr<Ipv4StaticRouting> ueStaticRouting = ipv4RoutingHelper.GetStaticRouting (ueNode->GetObject<Ipv4> ());
+        ueStaticRouting->SetDefaultRoute (epcHelper->GetUeDefaultGatewayAddress (), 1);
+      }
     }
 
+  mmwaveHelper->EnableTraces ();
+  cout << "5G installed..." << endl;
   // %%%%%%%%%%%% Set up the DASH server
   Ptr<Node> n_server = nodes.Get (dst_server);
 
@@ -298,7 +310,8 @@ main (int argc, char *argv[])
   string strIpv4Server =
       Ipv4AddressToString (n_server->GetObject<Ipv4> ()->GetAddress (1, 0).GetLocal ());
 
-  for (size_t i = 0; i < nodes.GetN (); i++)
+  cout << "Before app install..." << endl;
+  for (size_t i = 0; i < nodes.GetN () - 1; i++)
     {
       Ptr<Node> edgeServer = nodes.Get (i);
       string strIpv4Edge =
@@ -311,6 +324,24 @@ main (int argc, char *argv[])
       serverApps.Start (Seconds (0.0));
       serverApps.Stop (Seconds (stopTime));
     }
+  cout << "After app install..." << endl;
+
+  //Store IP adresses
+  std::string addr_file = "addresses";
+  ofstream out_addr_file (addr_file.c_str ());
+  for (unsigned int i = 0; i < nodes.GetN (); i++)
+    {
+      Ptr<Node> n = nodes.Get (i);
+      Ptr<Ipv4> ipv4 = n->GetObject<Ipv4> ();
+      for (uint32_t l = 1; l < ipv4->GetNInterfaces (); l++)
+        {
+          out_addr_file << i << " " << ipv4->GetAddress (l, 0).GetLocal () << endl;
+        }
+    }
+  out_addr_file.flush ();
+  out_addr_file.close ();
+
+  cout << "Logged addresses..." << endl;
 
   //=======================================================================================
   network.setNodeContainers (&nodes);
@@ -325,7 +356,8 @@ main (int argc, char *argv[])
   eCtrl.setController (controller);
   //=======================================================================================
 
-  Ipv4GlobalRoutingHelper::PopulateRoutingTables ();
+//  GlobalRouting does not work for wireless networks
+//  Ipv4GlobalRoutingHelper::PopulateRoutingTables ();
 
   ofstream fileMobility;
   fileMobility.open ("UsersConnection", ios::out);
@@ -414,6 +446,7 @@ main (int argc, char *argv[])
   DASHPlayerTracer::InstallAll (dir + string ("/topology-") + to_string (seed) + string (".csv"));
 
   Simulator::Stop (Seconds (stopTime));
+  cout << "Starting simulation!" << endl;
   Simulator::Run ();
   Simulator::Destroy ();
 

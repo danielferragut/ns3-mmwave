@@ -1,0 +1,169 @@
+'build' finished successfully (23.853s)
+#source, destination, rate_bps, delay_ms, pkt_loss, buffersize_pkts
+7 0 400000000 15 0 500
+0 1 20000000 15 0 500
+0 2 20000000 15 0 500
+1 8 30000000 15 0 500
+2 8 30000000 15 0 500
+#id, type, AdaptationLogic, StartUpDelay, AllowDownscale, AllowUpscale, MaxBufferedSeconds
+0 router
+1 router
+2 router
+3 ap
+4 ap
+5 ap
+6 ap
+7 cdn
+8 pgw
+Node size = 9
+Node name 0 = router
+Adding to non nodes -> Node name =0
+Node name 1 = router
+Adding to non nodes -> Node name =1
+Node name 2 = router
+Adding to non nodes -> Node name =2
+Node name 3 = ap
+Node name 4 = ap
+Node name 5 = ap
+Node name 6 = ap
+Node name 7 = cdn
+Adding to non nodes -> Node name =7
+Node name 8 = pgw
+Installing Internet Stack
+Created P2P Connections
+AP mapping done...
+Client node container creation done...
+Mobility model assigned to aps and clients
+Before 5G installation...
+5G installed...
+representations = /home/ferragut/Workspace/tcc/ns3-mmwave/../content/representations/netflix_vid1.csv
+Before app install...
+After app install...
+Logged addresses...
+Uplink Interface -> (7,0) -> 10.0.0.1
+Uplink Interface -> (0,1) -> 10.0.1.1
+Uplink Interface -> (0,2) -> 10.0.2.1
+Uplink Interface -> (1,8) -> 10.0.3.1
+Uplink Interface -> (2,8) -> 10.0.4.1
+Uplink Interface -> (3,3) -> 11.0.0.5
+Uplink Interface -> (4,4) -> 11.0.0.9
+Uplink Interface -> (5,5) -> 11.0.0.13
+Uplink Interface -> (6,6) -> 11.0.0.17
+newArrivalTime:  2.08576    ,sumArrivalTimes:  2.08576
+newArrivalTime:  8.34311    ,sumArrivalTimes:  11.9431
+newArrivalTime:  2.8742    ,sumArrivalTimes:  14.8173
+newArrivalTime:  1.81451    ,sumArrivalTimes:  16.6318
+newArrivalTime:  3.96654    ,sumArrivalTimes:  20.5984
+newArrivalTime:  16.1691    ,sumArrivalTimes:  36.7674
+newArrivalTime:  7.10977    ,sumArrivalTimes:  43.8772
+newArrivalTime:  4.78608    ,sumArrivalTimes:  48.6633
+newArrivalTime:  4.75179    ,sumArrivalTimes:  53.4151
+newArrivalTime:  13.6487    ,sumArrivalTimes:  67.0638
+newArrivalTime:  1.43816    ,sumArrivalTimes:  68.5019
+newArrivalTime:  0.0588935    ,sumArrivalTimes:  68.5608
+newArrivalTime:  3.30804    ,sumArrivalTimes:  71.8688
+newArrivalTime:  0.986034    ,sumArrivalTimes:  72.8549
+newArrivalTime:  4.01355    ,sumArrivalTimes:  76.8684
+newArrivalTime:  4.6282    ,sumArrivalTimes:  81.4966
+AnimationInterface WARNING:Node:1 Does not have a mobility model. Use SetConstantPosition if it is stationary
+AnimationInterface WARNING:Node:1 Does not have a mobility model. Use SetConstantPosition if it is stationary
+Starting simulation!
+Representation ID = 1, height = 640, bitrate = 360,235
+Representation ID = 2, height = 640, bitrate = 360,375
+Representation ID = 3, height = 640, bitrate = 360,560
+Representation ID = 4, height = 640, bitrate = 360,750
+Representation ID = 10, height = 960, bitrate = 540,1050
+Representation ID = 11, height = 960, bitrate = 540,1750
+Representation ID = 20, height = 1280, bitrate = 720,2350
+Representation ID = 21, height = 1280, bitrate = 720,3000
+Representation ID = 30, height = 1920, bitrate = 1080,4300
+Representation ID = 31, height = 1920, bitrate = 1080,5800
+Size of compressed = 22525, uncompressed = 341983
+Adding '/content/mpds/vid1.mpd.gz' to m_fileSizes with size 22525
+Representation ID = 1, height = 640, bitrate = 360,235
+Representation ID = 2, height = 640, bitrate = 360,375
+Representation ID = 3, height = 640, bitrate = 360,560
+Representation ID = 4, height = 640, bitrate = 360,750
+Representation ID = 10, height = 960, bitrate = 540,1050
+Representation ID = 11, height = 960, bitrate = 540,1750
+Representation ID = 20, height = 1280, bitrate = 720,2350
+Representation ID = 21, height = 1280, bitrate = 720,3000
+Representation ID = 30, height = 1920, bitrate = 1080,4300
+Representation ID = 31, height = 1920, bitrate = 1080,5800
+Size of compressed = 22525, uncompressed = 341983
+Adding '/content/mpds/vid1.mpd.gz' to m_fileSizes with size 22525
+Representation ID = 1, height = 640, bitrate = 360,235
+Representation ID = 2, height = 640, bitrate = 360,375
+Representation ID = 3, height = 640, bitrate = 360,560
+Representation ID = 4, height = 640, bitrate = 360,750
+Representation ID = 10, height = 960, bitrate = 540,1050
+Representation ID = 11, height = 960, bitrate = 540,1750
+Representation ID = 20, height = 1280, bitrate = 720,2350
+Representation ID = 21, height = 1280, bitrate = 720,3000
+Representation ID = 30, height = 1920, bitrate = 1080,4300
+Representation ID = 31, height = 1920, bitrate = 1080,5800
+Size of compressed = 22525, uncompressed = 341983
+Adding '/content/mpds/vid1.mpd.gz' to m_fileSizes with size 22525
+Representation ID = 1, height = 640, bitrate = 360,235
+Representation ID = 2, height = 640, bitrate = 360,375
+Representation ID = 3, height = 640, bitrate = 360,560
+Representation ID = 4, height = 640, bitrate = 360,750
+Representation ID = 10, height = 960, bitrate = 540,1050
+Representation ID = 11, height = 960, bitrate = 540,1750
+Representation ID = 20, height = 1280, bitrate = 720,2350
+Representation ID = 21, height = 1280, bitrate = 720,3000
+Representation ID = 30, height = 1920, bitrate = 1080,4300
+Representation ID = 31, height = 1920, bitrate = 1080,5800
+Size of compressed = 22525, uncompressed = 341983
+Adding '/content/mpds/vid1.mpd.gz' to m_fileSizes with size 22525
+Representation ID = 1, height = 640, bitrate = 360,235
+Representation ID = 2, height = 640, bitrate = 360,375
+Representation ID = 3, height = 640, bitrate = 360,560
+Representation ID = 4, height = 640, bitrate = 360,750
+Representation ID = 10, height = 960, bitrate = 540,1050
+Representation ID = 11, height = 960, bitrate = 540,1750
+Representation ID = 20, height = 1280, bitrate = 720,2350
+Representation ID = 21, height = 1280, bitrate = 720,3000
+Representation ID = 30, height = 1920, bitrate = 1080,4300
+Representation ID = 31, height = 1920, bitrate = 1080,5800
+Size of compressed = 22525, uncompressed = 341983
+Adding '/content/mpds/vid1.mpd.gz' to m_fileSizes with size 22525
+Representation ID = 1, height = 640, bitrate = 360,235
+Representation ID = 2, height = 640, bitrate = 360,375
+Representation ID = 3, height = 640, bitrate = 360,560
+Representation ID = 4, height = 640, bitrate = 360,750
+Representation ID = 10, height = 960, bitrate = 540,1050
+Representation ID = 11, height = 960, bitrate = 540,1750
+Representation ID = 20, height = 1280, bitrate = 720,2350
+Representation ID = 21, height = 1280, bitrate = 720,3000
+Representation ID = 30, height = 1920, bitrate = 1080,4300
+Representation ID = 31, height = 1920, bitrate = 1080,5800
+Size of compressed = 22526, uncompressed = 341984
+Adding '/content/mpds/vid1.mpd.gz' to m_fileSizes with size 22526
+Representation ID = 1, height = 640, bitrate = 360,235
+Representation ID = 2, height = 640, bitrate = 360,375
+Representation ID = 3, height = 640, bitrate = 360,560
+Representation ID = 4, height = 640, bitrate = 360,750
+Representation ID = 10, height = 960, bitrate = 540,1050
+Representation ID = 11, height = 960, bitrate = 540,1750
+Representation ID = 20, height = 1280, bitrate = 720,2350
+Representation ID = 21, height = 1280, bitrate = 720,3000
+Representation ID = 30, height = 1920, bitrate = 1080,4300
+Representation ID = 31, height = 1920, bitrate = 1080,5800
+Size of compressed = 22526, uncompressed = 341984
+Adding '/content/mpds/vid1.mpd.gz' to m_fileSizes with size 22526
+Representation ID = 1, height = 640, bitrate = 360,235
+Representation ID = 2, height = 640, bitrate = 360,375
+Representation ID = 3, height = 640, bitrate = 360,560
+Representation ID = 4, height = 640, bitrate = 360,750
+Representation ID = 10, height = 960, bitrate = 540,1050
+Representation ID = 11, height = 960, bitrate = 540,1750
+Representation ID = 20, height = 1280, bitrate = 720,2350
+Representation ID = 21, height = 1280, bitrate = 720,3000
+Representation ID = 30, height = 1920, bitrate = 1080,4300
+Representation ID = 31, height = 1920, bitrate = 1080,5800
+Size of compressed = 22525, uncompressed = 341983
+Adding '/content/mpds/vid1.mpd.gz' to m_fileSizes with size 22525
+assert failed. cond="index < m_devices.size ()", msg="Device index 3 is out of range (only have 2 devices).", file=../src/network/model/node.cc, line=147
+terminate called without an active exception
+Command ['/home/ferragut/Workspace/tcc/ns3-mmwave/build/scratch/dash-btree-mob', '--Client=4', '--seed=15', '--stopTime=10'] terminated with signal SIGIOT. Run it under a debugger to get more information (./waf --run <program> --gdb").
